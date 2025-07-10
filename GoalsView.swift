@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-// MARK: - Bubble Button Components (from your friend's code)
+// MARK: - Bubble Button Components 
 struct BackwardBubble: View {
     let bubbleSize: CGFloat
     let action: () -> Void
@@ -51,7 +51,8 @@ struct GoalsView: View {
         Goal(title: "Practice positive self-talk", description: "Be kind to yourself and challenge negative thoughts"),
         Goal(title: "Connect with a friend or family member", description: "Maintain meaningful relationships and social connections")
     ]
-    
+
+    //MARK: Body View
     var body: some View {
         
         BackgroundContainer {
