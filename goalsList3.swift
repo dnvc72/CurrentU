@@ -4,14 +4,14 @@ import UIKit
 // 1. Enums
 enum GoalCategory: String, CaseIterable, Identifiable {
     case selfCare = "self_care"
-    case therapy, nutrition, exercise, social, mindfulness, recovery
+    case therapy, nutrition, fitness, social, mindfulness, recovery
     var id: String { rawValue }
     var displayName: String {
         switch self {
         case .selfCare: return "Self Care"
         case .therapy: return "Therapy"
         case .nutrition: return "Nutrition"
-        case .exercise: return "Exercise"
+        case .fitness: return "Fitness"
         case .social: return "Social"
         case .mindfulness: return "Mindfulness"
         case .recovery: return "Recovery"
@@ -22,7 +22,7 @@ enum GoalCategory: String, CaseIterable, Identifiable {
         case .selfCare: return .pink
         case .therapy: return .purple
         case .nutrition: return .green
-        case .exercise: return .blue
+        case .fitness: return .blue
         case .social: return .yellow
         case .mindfulness: return .indigo
         case .recovery: return .mint
@@ -36,7 +36,7 @@ enum GoalStatus: String, CaseIterable {
     case paused
     var icon: Image {
         switch self {
-        case .notStarted: return Image(systemName: "clock")
+        case .notStarted: return Image(systemName: "checkmark.circle")
         case .inProgress: return Image(systemName: "play.fill")
         case .completed: return Image(systemName: "checkmark.circle.fill")
         case .paused: return Image(systemName: "pause.fill")
@@ -233,7 +233,8 @@ struct GoalsView: View {
             Button {
                 viewModel.showForm.toggle()
             } label: {
-                Image(systemName: "pencil")
+                //replace with pencil bubble button
+                Image(systemName: "plus")
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
                     .padding(12)
@@ -262,7 +263,7 @@ struct GoalsView: View {
     
     private var goalForm: some View {
         VStack(spacing: 12) {
-            Text(viewModel.editingGoal == nil ? "Create Goal" : "Edit Goal")
+            Text(viewModel.editingGoal == nil ? "New Goal" : "Edit Goal")
                 .font(.headline)
             TextField("Title", text: $viewModel.formData.title)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -277,7 +278,7 @@ struct GoalsView: View {
             }
             .accessibilityLabel("Goal category picker")
             DatePicker(
-                "Target Date",
+                "Complete by",
                 selection: Binding($viewModel.formData.targetDate, replacingNilWith: Date()),
                 displayedComponents: .date
             )
@@ -334,22 +335,15 @@ struct GoalsView: View {
                         .background(goal.category.color.opacity(0.2))
                         .cornerRadius(10)
                         .accessibilityLabel("Category: \(goal.category.displayName)")
-                    Text(goal.status.label)
-                        .padding(6)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(10)
-                        .accessibilityLabel("Status: \(goal.status.label)")
-                    goal.status.icon
+        
                 }
                 if let target = goal.targetDate {
-                    Label("Target: \(target.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
+                    Label("Complete by: \(target.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
                         .font(.footnote)
                         .foregroundColor(.blue)
                         .accessibilityLabel("Target date: \(target.formatted(date: .abbreviated, time: .omitted))")
                 }
-                ProgressView(value: Float(goal.progressPercentage), total: 100)
-                    .progressViewStyle(LinearProgressViewStyle())
-                    .accessibilityLabel("Progress: \(goal.progressPercentage) percent")
+               
                 
                 // Checkbox for completion toggle
                 Button(action: {
@@ -364,7 +358,6 @@ struct GoalsView: View {
                     HStack {
                         Image(systemName: goal.status == .completed ? "checkmark.circle.fill" : "circle")
                             .foregroundColor(goal.status == .completed ? .blue : .gray)
-                        Text("Completed")
                     }
                 }
                 .accessibilityLabel("Mark goal \(goal.title) as complete")
@@ -379,11 +372,12 @@ struct GoalsView: View {
     
     private var emptyState: some View {
         VStack(spacing: 12) {
+            //replace with semi transparent leaf icon
             Image(systemName: "leaf.fill")
                 .font(.system(size: 64))
                 .foregroundColor(.green.opacity(0.25))
                 .accessibilityHidden(true)
-            Text("No goals to show.")
+            Text("No goals")
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
         }
